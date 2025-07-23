@@ -1,26 +1,39 @@
 #include "Menu.h"
 #include "Display.h"
 #include "AppState.h"
-#include "Touchscreen.h"
 #include "Encoder.h"
-#include "ThemeManager.h"
+#include "Touchscreen.h"
 #include "InputHandler.h"
-
-const int menuSize = 6;
-String menuItems[menuSize] = {
-  "Status",
-  "Sniff Packets",
-  "Deauth Attack",
-  "Jamming",
-  "Replay",
-  "Diagnostics"
-};
-
-// ✅ Only define once here
-int menuIndex = 0;
+#include "ThemeManager.h"
 
 void initMenu() {
   menuIndex = 0;
+}
+
+void renderMenu() {
+  Theme theme = getCurrentTheme();
+  clearScreen();
+  drawTitleBar("Main Menu");
+
+  for (int i = 0; i < menuSize; i++) {
+    int y = 40 + (i * theme.spacingY);
+    drawMenuItem(menuItems[i].c_str(), y, i == menuIndex);
+  }
+}
+
+void updateMenu() {
+  renderMenu();
+
+  if (encoderMoved()) {
+    if (encoderDirection() > 0) nextMenuItem();
+    else prevMenuItem();
+    delay(150);
+  }
+
+  if (encoderClicked() || touchClicked()) {
+    selectMenuItem();
+    resetInactivityTimer();
+  }
 }
 
 int getMenuIndex() {
@@ -47,42 +60,5 @@ void selectMenuItem() {
     case 3: setAppState(JAM_MODE);         break;
     case 4: setAppState(REPLAY_MODE);      break;
     case 5: setAppState(DIAGNOSTICS);      break;
-  }
-}
-
-void drawMenuItem(const String& label, int y, bool highlighted) {
-  Theme theme = getCurrentTheme();
-  const int x = 20;  // Local constant
-
-  if (highlighted) {
-    tft.setTextColor(theme.highlightColor, theme.backgroundColor);
-  } else {
-    tft.setTextColor(theme.textColor, theme.backgroundColor);
-  }
-
-  tft.setTextFont(theme.textFont);
-  tft.setCursor(x, y);
-  tft.print(label);
-}
-
-void updateMenu() {
-  Theme theme = getCurrentTheme();
-  clearScreen();
-  drawTitleBar("Main Menu");
-
-  for (int i = 0; i < menuSize; i++) {
-    int y = 40 + (i * theme.spacingY);  // ✅ Local variable
-    drawMenuItem(menuItems[i], y, i == menuIndex);
-  }
-
-  if (encoderMoved()) {
-    if (encoderDirection() > 0) nextMenuItem();
-    else prevMenuItem();
-    delay(150); // Smooth scroll
-  }
-
-  if (encoderClicked() || touchClicked()) {
-    selectMenuItem();
-    resetInactivityTimer();
   }
 }
