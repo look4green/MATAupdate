@@ -1,8 +1,9 @@
 #ifndef APPSTATE_H
 #define APPSTATE_H
 
-#include <Arduino.h>  // ✅ Required for String
+#include <Arduino.h>
 
+// Enum representing different screens and states
 enum AppState {
   HOME,
   SETTINGS_PANEL,
@@ -16,12 +17,14 @@ enum AppState {
   JAM_MODE,
   PACKET_SNIFF,
   REPLAY_MODE,
-  DIAGNOSTICS,
+  DIAGNOSTICS
 };
 
+// Global app state and menu system
 extern AppState currentState;
-extern String menuItems[];
 extern int menuIndex;
+extern const int menuSize;
+extern String menuItems[];
 
 void setAppState(AppState newState);
 
