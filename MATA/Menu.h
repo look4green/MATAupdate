@@ -3,15 +3,14 @@
 
 #include <Arduino.h>
 
-// Menu system for MATA: navigable screens, state switching, and preview zones
-extern int menuIndex;  // Declaration only
+// Menu interaction
+void initMenu();
+void updateMenu();
 void renderMenu();
-void initMenu();             // Setup menu system
-void updateMenu();           // Refresh display + selection
-void nextMenuItem();         // Move down
-void prevMenuItem();         // Move up
-void selectMenuItem();       // Trigger selected action
-int getMenuIndex();          // For external querying
+void nextMenuItem();
+void prevMenuItem();
+void selectMenuItem();
+int getMenuIndex();
 void setMenuIndex(int index);
 
 #endif
